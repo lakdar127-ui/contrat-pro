@@ -14,12 +14,40 @@ export default function Success() {
 
   const generateContract = async () => {
     try {
-      const saved = JSON.parse(localStorage.getItem("contratFormData") || "{}");
+      const raw = localStorage.getItem("contratFormData");
+      if (!raw) {
+        setStatus("error");
+        return;
+      }
+
+      let saved;
+      try {
+        saved = JSON.parse(raw);
+      } catch {
+        setStatus("error");
+        return;
+      }
+
+      if (
+        !saved.freelanceName ||
+        !saved.clientName ||
+        !saved.missionTitle
+      ) {
+        setStatus("error");
+        return;
+      }
+
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ formData: saved, type: "full" })
       });
+
+      if (!response.ok) {
+        setStatus("error");
+        return;
+      }
+
       const data = await response.json();
       setContractData(data);
       setStatus("ready");
@@ -63,7 +91,10 @@ export default function Success() {
           <>
             <div style={{ fontSize: 48, marginBottom: 24 }}>❌</div>
             <h2 style={{ fontSize: 24, marginBottom: 12 }}>Une erreur est survenue</h2>
-            <p style={{ color: "#7a7468" }}>Contactez : support@contrat-pro.fr</p>
+            <p style={{ color: "#7a7468", marginBottom: 8 }}>
+              Impossible de retrouver les informations de votre contrat ou de terminer la génération.
+            </p>
+            <p style={{ color: "#7a7468" }}>Merci de regénérer un contrat depuis la page d’accueil ou contactez : support@contrat-pro.fr</p>
           </>
         )}
       </div>

@@ -853,7 +853,7 @@ Date et signature :                          Date et signature :
             <div className="feature">
               <div className="feature-num">03</div>
               <div className="feature-title">Téléchargez & signez</div>
-              <div className="feature-text">PDF professionnel prêt à l'envoi. Juridiquement solide pour le droit français.</div>
+              <div className="feature-text">Fichier texte (.txt) prêt à l'envoi. Juridiquement solide pour le droit français.</div>
             </div>
           </div>
 
@@ -993,7 +993,7 @@ Date et signature :                          Date et signature :
             <div>
               <h2 className="preview-title">Aperçu de votre contrat</h2>
               <p style={{fontSize: 13, color: 'var(--muted)', fontFamily: "'DM Mono', monospace", marginTop: 4}}>
-                Version préliminaire — payez pour télécharger en PDF
+                Version préliminaire — payez pour télécharger en fichier texte (.txt)
               </p>
             </div>
             <div className="preview-actions">
@@ -1099,7 +1099,7 @@ Date et signature :                          Date et signature :
 
           <div style={{textAlign: 'center', marginTop: 24}}>
             <button className="btn-primary" style={{padding: '16px 48px', fontSize: 13}} onClick={() => setStep("payment")}>
-              🔓 Débloquer & télécharger le PDF complet — 9€
+              🔓 Débloquer & télécharger le contrat complet en fichier texte (.txt) — 9€
             </button>
           </div>
         </div>
@@ -1115,7 +1115,7 @@ Date et signature :                          Date et signature :
             <div className="price-display">9€</div>
             <div className="price-period">Paiement unique · Ce contrat uniquement</div>
             <div className="pay-features">
-              {["Contrat complet avec toutes les clauses", "Export en PDF haute qualité", "Droit français, juridiquement solide", "Accès immédiat après paiement", "Support par email inclus"].map((f, i) => (
+              {["Contrat complet avec toutes les clauses", "Export en fichier texte (.txt)", "Droit français, juridiquement solide", "Accès immédiat après paiement", "Support par email inclus"].map((f, i) => (
                 <div className="pay-feature" key={i}><span className="check">✓</span> {f}</div>
               ))}
             </div>
@@ -1138,9 +1138,6 @@ Date et signature :                          Date et signature :
           <button className="download-btn" onClick={handleDownload}>
             ⬇ Télécharger mon contrat
           </button>
-          <p style={{marginTop: 24, fontSize: 12, color: 'var(--muted)', fontFamily: "'DM Mono', monospace"}}>
-            Un email de confirmation vous a été envoyé à {formData.freelanceEmail}
-          </p>
           <button className="btn-secondary" style={{margin: '24px auto', display: 'block'}}
             onClick={() => { setStep("landing"); setFormData({ freelanceName:"",freelanceJob:"",freelanceEmail:"",clientName:"",clientCompany:"",clientEmail:"",missionTitle:"",missionDescription:"",duration:"",rate:"",rateType:"forfait",deliverable:"",startDate:"" }); setContractData(null); }}>
             ← Créer un autre contrat

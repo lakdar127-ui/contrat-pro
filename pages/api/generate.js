@@ -30,12 +30,45 @@ Réponds UNIQUEMENT en JSON valide sans backticks :
       })
     });
 
+    if (!response.ok) {
+      let errorDetail = "";
+      try {
+        const errorBody = await response.text();
+        errorDetail = errorBody;
+      } catch {
+        // ignore parsing error of error body
+      }
+      console.error("Erreur HTTP depuis l'API Anthropic :", response.status, errorDetail);
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de l'appel à l'API d'intelligence artificielle." });
+    }
+
     const data = await response.json();
-    const text = data.content.map(i => i.text || "").join("");
+
+    if (!data || !Array.isArray(data.content)) {
+      console.error("Réponse inattendue de l'API Anthropic (champ content manquant ou invalide) :", data);
+      return res
+        .status(500)
+        .json({ error: "Réponse inattendue de l'API d'intelligence artificielle." });
+    }
+
+    const text = data.content.map((item) => item.text || "").join("");
     const clean = text.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
+
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch (parseError) {
+      console.error("Erreur lors du parsing JSON de la réponse Anthropic :", parseError, clean);
+      return res
+        .status(500)
+        .json({ error: "Réponse IA invalide, impossible de générer le contrat." });
+    }
+
     res.status(200).json(parsed);
   } catch (e) {
+    console.error("Erreur inattendue dans l'API /api/generate :", e);
     res.status(500).json({ error: "Erreur génération" });
   }
 }
