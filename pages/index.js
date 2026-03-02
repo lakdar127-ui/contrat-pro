@@ -804,17 +804,9 @@ export default function ContratFreelanceApp() {
       setStep("form");
     }
   };
-
-  const handlePayment = async () => {
-    setStep("generating");
-    try {
-      const fullData = await generateFullContractWithAI(formData);
-      setContractData(fullData);
-      setStep("success");
-    } catch (e) {
-      setStep("payment");
-    }
-  };
+const handlePayment = () => {
+  window.location.href = "https://buy.stripe.com/eVqfZa6GE4rgaKr8FxcV207";
+};
 
   const handleDownload = () => {
     const content = buildContractText(formData, contractData);
