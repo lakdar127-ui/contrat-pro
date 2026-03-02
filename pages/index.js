@@ -742,6 +742,7 @@ export default function ContratFreelanceApp() {
     }
   };
 const handlePayment = () => {
+  localStorage.setItem("contratFormData", JSON.stringify(formData));
   window.location.href = "https://buy.stripe.com/eVqfZa6GE4rgaKr8FxcV207";
 };
 
