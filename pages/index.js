@@ -698,84 +698,21 @@ const STYLE = `
 
 // ---- APERÇU SEULEMENT : 3 premiers articles, pas les clauses sensibles ----
 async function generatePreviewWithAI(formData) {
-  const prompt = `Tu es un expert juridique spécialisé dans les contrats freelance français. Génère UNIQUEMENT les 3 premiers articles d'un contrat de prestation de services en JSON.
-
-DONNÉES :
-- Prestataire : ${formData.freelanceName}, ${formData.freelanceJob}
-- Client : ${formData.clientName}, ${formData.clientCompany || 'Particulier'}
-- Mission : ${formData.missionTitle}
-- Description : ${formData.missionDescription}
-- Tarif : ${formData.rate} € (${formData.rateType})
-- Durée : ${formData.duration}
-
-Réponds UNIQUEMENT avec un JSON valide (sans backticks) :
-{
-  "contractNumber": "FC-${new Date().getFullYear()}-XXXX",
-  "date": "date du jour en français",
-  "objet": "2-3 phrases sur l'objet du contrat",
-  "prestations": ["prestation 1", "prestation 2", "prestation 3"],
-  "conditions_paiement": "1 phrase sur les conditions de paiement"
-}`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch("/api/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 800,
-      messages: [{ role: "user", content: prompt }]
-    })
+    body: JSON.stringify({ formData, type: "preview" })
   });
-
-  const data = await response.json();
-  const text = data.content.map(i => i.text || "").join("");
-  const clean = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
+  return await response.json();
 }
 
-// ---- CONTRAT COMPLET : généré uniquement après paiement ----
 async function generateFullContractWithAI(formData) {
-  const prompt = `Tu es un expert juridique spécialisé dans les contrats freelance français. Génère un contrat de prestation de services COMPLET en JSON.
-
-DONNÉES DU CONTRAT :
-- Prestataire : ${formData.freelanceName}, ${formData.freelanceJob}, ${formData.freelanceEmail}
-- Client : ${formData.clientName}, ${formData.clientCompany || 'Particulier'}, ${formData.clientEmail}
-- Mission : ${formData.missionTitle}
-- Description : ${formData.missionDescription}
-- Durée : ${formData.duration}
-- Tarif : ${formData.rate} € (${formData.rateType})
-- Livrable : ${formData.deliverable}
-- Date début : ${formData.startDate}
-
-Réponds UNIQUEMENT avec un JSON valide (sans backticks) :
-{
-  "contractNumber": "FC-${new Date().getFullYear()}-XXXX",
-  "date": "date du jour en français",
-  "objet": "2-3 phrases précises sur l'objet",
-  "prestations": ["liste détaillée des prestations"],
-  "obligations_freelance": ["liste des obligations du prestataire"],
-  "obligations_client": ["liste des obligations du client"],
-  "conditions_paiement": "texte complet sur conditions et délais",
-  "propriete_intellectuelle": "clause propriété intellectuelle adaptée",
-  "confidentialite": "clause de confidentialité complète",
-  "resiliation": "conditions de résiliation détaillées",
-  "litiges": "clause litiges, droit français, tribunal compétent"
-}`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch("/api/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2000,
-      messages: [{ role: "user", content: prompt }]
-    })
+    body: JSON.stringify({ formData, type: "full" })
   });
-
-  const data = await response.json();
-  const text = data.content.map(i => i.text || "").join("");
-  const clean = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
+  return await response.json();
 }
 
 // ---- Main App ----
